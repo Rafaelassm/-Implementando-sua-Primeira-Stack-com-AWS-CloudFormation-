@@ -1,0 +1,5 @@
+aws cloudformation deploy \
+--template-file simple-vpc.yaml \
+--stack-name my-simple-vpc \
+--parameter-overrides VpcCidr=10.0.0.0/16 PublicSubnet1Cidr=10.0.1.0/24 PublicSubnet2Cidr=10.0.2.0/24 \
+--capabilities CAPABILITY_NAMED_IAM

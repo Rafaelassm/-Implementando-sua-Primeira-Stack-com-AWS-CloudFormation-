@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Esqueleto para AWS Network Firewall (ALERTA: personalize RuleGroups e Policies de acordo com seu caso)"
+
+
+Parameters:
+VpcId:
+Type: AWS::EC2::VPC::Id
+Subnet1:
+Type: AWS::EC2::Subnet::Id
+Subnet2:
+Type: AWS::EC2::Subnet::Id
+
+
+Resources:
+# Exemplo simplificado de FirewallPolicy (muito básico)
+MyFirewallPolicy:
+Type: AWS::NetworkFirewall::FirewallPolicy
+Properties:
+FirewallPolicy:
+StatelessDefaultActions:
+- aws:forward_to_sfe
+StatelessFragmentDefaultActions:
+- aws:forward_to_sfe
+# Regra de exemplo vazia. Produção: adicione RuleGroupReferences aqui.
+Description: "FirewallPolicy esqueleto - personalize as regras"
+
+
+MyFirewall:
+Type: AWS::NetworkFirewall::Firewall
+DependsOn: MyFirewallPolicy
+Properties:
+FirewallName: simple-network-firewall
+FirewallPolicyArn: !GetAtt MyFirewallPolicy.Arn
+VpcId: !Ref VpcId
+SubnetMappings:
+- SubnetId: !Ref Subnet1
+- SubnetId: !Ref Subnet2
+DeleteProtection: false
+SubnetChangeProtection: false
+
+
+Outputs:
+FirewallArn:
+Value: !GetAtt MyFirewall.Arn
+Description: ARN do firewall (se criado com sucesso)

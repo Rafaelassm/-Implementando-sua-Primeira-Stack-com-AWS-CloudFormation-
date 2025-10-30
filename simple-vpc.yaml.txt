@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+
+PublicRoute:
+Type: AWS::EC2::Route
+DependsOn: AttachGateway
+Properties:
+RouteTableId: !Ref PublicRouteTable
+DestinationCidrBlock: 0.0.0.0/0
+GatewayId: !Ref InternetGateway
+
+
+PublicSubnet1:
+Type: AWS::EC2::Subnet
+Properties:
+VpcId: !Ref MyVPC
+CidrBlock: !Ref PublicSubnet1Cidr
+MapPublicIpOnLaunch: true
+AvailabilityZone: !Select [ 0, !GetAZs '' ]
+Tags:
+- Key: Name
+Value: public-subnet-1
+
+
+PublicSubnet2:
+Type: AWS::EC2::Subnet
+Properties:
+VpcId: !Ref MyVPC
+CidrBlock: !Ref PublicSubnet2Cidr
+MapPublicIpOnLaunch: true
+AvailabilityZone: !Select [ 1, !GetAZs '' ]
+Tags:
+- Key: Name
+Value: public-subnet-2
+
+
+Subnet1RouteAssoc:
+Type: AWS::EC2::SubnetRouteTableAssociation
+Properties:
+SubnetId: !Ref PublicSubnet1
+RouteTableId: !Ref PublicRouteTable
+
+
+Subnet2RouteAssoc:
+Type: AWS::EC2::SubnetRouteTableAssociation
+Properties:
+SubnetId: !Ref PublicSubnet2
+RouteTableId: !Ref PublicRouteTable
+
+
+Outputs:
+VpcId:
+Description: ID da VPC criada
+Value: !Ref MyVPC
+PublicSubnet1Id:
+Value: !Ref PublicSubnet1
+PublicSubnet2Id:
+Value: !Ref PublicSubnet2
